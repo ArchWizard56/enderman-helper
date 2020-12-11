@@ -12,6 +12,17 @@ async def sendCommand(command):
         async with session.post(url, headers=headers, json={"command": command}) as r:
             return r.status
 
+async def getStatus():
+    headers = {
+        "Accept": "application/vnd.pterodactyl+json",
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {config.api.apiKey}"
+    }
+    async with aiohttp.ClientSession() as session:
+        url = f"{config.api.apiUrl}/client/servers/{config.server.id}/utilization"
+        async with session.get(url, headers=headers) as r:
+            return await r.json()
+            
 async def sendSignal(signal):
     headers = {
         "Accept": "application/vnd.pterodactyl+json",
