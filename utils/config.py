@@ -2,7 +2,7 @@ import configparser
 
 CONFIG = configparser.ConfigParser()
 
-CONFIG.read("config.ini")
+CONFIG.read("config/config.ini")
 
 class BOT:
     token = CONFIG["BOT"]["token"]
@@ -17,6 +17,7 @@ class SERVER:
 class DISCORD:
     chatChannel = CONFIG["DISCORD"]["chatChannel"]
     consoleChannel = CONFIG["DISCORD"]["consoleChannel"]
+    modLogsChannel = CONFIG["DISCORD"]["modLogsChannel"]
 
 class API:
     apiUrl = CONFIG["API"]["apiUrl"]
