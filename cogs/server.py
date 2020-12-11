@@ -16,6 +16,10 @@ def docstring_parameter(*sub):
 class Server(commands.Cog):
     def __init__(self, client):
         self.client = client
+        self.checkServerStatus.start()
+
+    def cog_unload(self):
+        self.checkServerStatus.cancel()
     
     @commands.command()
     @docstring_parameter(config.bot.prefix)
@@ -42,10 +46,11 @@ class Server(commands.Cog):
         else:
             await ctx.send("Invalid power signal")
 
-    @tasks.loop(minutes=2)
+    @tasks.loop(minutes = 2)
     async def checkServerStatus(self):
         status = await api.getStatus()
         attributes = status["attributes"]
+        print(attributes)
         if attributes['memory']['current'] > attributes['memory']['limit']:
             logging.warn(f"Detected memory problem, {attributes['memory']['current']}/{attributes['memory']['limit']}, killing and restarting server")
             await self.client.get_channel(int(config.discord.modLogsChannel)).send(f"Detected memory problem, {attributes['memory']['current']}/{attributes['memory']['limit']}, killing and restarting server")

@@ -1,9 +1,10 @@
 import aiohttp
 import discord
 import re
+import traceback
 from utils import config,api
 from utils.logs import logging
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 
 
@@ -15,11 +16,14 @@ class Events(commands.Cog):
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.MissingRole):
             await ctx.send("You don't have the permissions to run this command")
+            return
 
         if isinstance(error, commands.CommandNotFound):
             await ctx.send(f"I couldn't find that command, try {config.bot.prefix}help")
-        else:
-            print(error)
+            return
+        
+        print('Something went wrong!')
+        logging.warning(traceback.format_exc())
 
     @commands.Cog.listener()
     async def on_ready(self):
