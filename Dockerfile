@@ -5,7 +5,6 @@ COPY ./requirements.txt ./requirements.txt
 RUN apt-get update && \
     apt-get install git gcc -y -q && \
     rm -rf /var/lib/apt/lists/* && \
-    rm -rf /root/.cache/pip/* && \
     apt-get clean
 
 RUN mkdir /app
