@@ -34,7 +34,7 @@ class Events(commands.Cog):
     async def on_message(self,message):
         if message.author == self.client.user:
             return
-        if int(message.channel.id) == int(config.discord.chatChannel):
+        if int(message.channel.id) == int(config.discord.chatChannel) and not message.author.bot:
             command = f'tellraw @a ["",{{"text":"[DISCORD]","color":"light_purple"}},{{"text":" <{message.author}> {message.content}"}}]'
             await api.sendCommand(command)
 
