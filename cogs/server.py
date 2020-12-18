@@ -16,11 +16,39 @@ def docstring_parameter(*sub):
 class Server(commands.Cog):
     def __init__(self, client):
         self.client = client
-        self.checkServerStatus.start()
 
     def cog_unload(self):
-        self.checkServerStatus.cancel()
+        if self.checkServerStatus.get_task() != None:
+            self.checkServerStatus.cancel()
     
+    @commands.command()
+    @docstring_parameter(config.bot.prefix)
+    @commands.has_role("Admin")
+    async def command (self, ctx, *, command):
+        """
+        Usage: {0}command <command>
+
+        Run a command on the minecraft server
+        """
+        await api.sendCommand(command)
+
+        
+    @commands.command()
+    @docstring_parameter(config.bot.prefix)
+    @commands.has_role("Admin")
+    async def memchecktoggle (self, ctx, *, command):
+        """
+        Usage: {0}memchecktoggle
+
+        Toggle the memory checking and killing functionality
+        """
+        if self.checkServerStatus.get_task() != None:
+            self.checkServerStatus.cancel()
+            await ctx.send("Enabled Memory Checker")
+        else:
+            self.checkServerStatus.start()
+            await ctx.send("Disabled Memory Checker")
+        
     @commands.command()
     @docstring_parameter(config.bot.prefix)
     async def mc (self, ctx, *, chat):
