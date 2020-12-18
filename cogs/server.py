@@ -16,6 +16,7 @@ def docstring_parameter(*sub):
 class Server(commands.Cog):
     def __init__(self, client):
         self.client = client
+        self.checkServerStatus.cancel()
 
     def cog_unload(self):
         if self.checkServerStatus.get_task() != None:
@@ -36,18 +37,18 @@ class Server(commands.Cog):
     @commands.command()
     @docstring_parameter(config.bot.prefix)
     @commands.has_role("Admin")
-    async def memchecktoggle (self, ctx, *, command):
+    async def memchecktoggle (self, ctx):
         """
         Usage: {0}memchecktoggle
 
         Toggle the memory checking and killing functionality
         """
-        if self.checkServerStatus.get_task() != None:
+        if self.checkServerStatus.is_running():
             self.checkServerStatus.cancel()
-            await ctx.send("Enabled Memory Checker")
+            await ctx.send("Disable Memory Checker")
         else:
             self.checkServerStatus.start()
-            await ctx.send("Disabled Memory Checker")
+            await ctx.send("Enabled Memory Checker")
         
     @commands.command()
     @docstring_parameter(config.bot.prefix)
@@ -78,7 +79,6 @@ class Server(commands.Cog):
     async def checkServerStatus(self):
         status = await api.getStatus()
         attributes = status["attributes"]
-        print(attributes)
         if attributes['memory']['current'] > attributes['memory']['limit']:
             logging.warn(f"Detected memory problem, {attributes['memory']['current']}/{attributes['memory']['limit']}, killing and restarting server")
             await self.client.get_channel(int(config.discord.modLogsChannel)).send(f"Detected memory problem, {attributes['memory']['current']}/{attributes['memory']['limit']}, killing and restarting server")
