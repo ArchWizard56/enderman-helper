@@ -10,6 +10,6 @@ lazy-object-proxy==1.4.3
 pylint==2.6.0
 six==1.15.0
 toml==0.10.2
-websockets==8.1
+websockets==9.1
 wrapt==1.12.1
 yarl==1.5.1
